@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 
 	"oaktioneer/internal/auction"
@@ -23,6 +24,15 @@ func New(store *store.RestaurantStore) *Handler {
 }
 
 func (h *Handler) RegisterRestaurant(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		h.ListRestaurants(w, r)
+		return
+	}
+	if r.Method == http.MethodPut {
+		h.UpdateBid(w, r)
+		return
+	}
+
 	var req models.Restaurant
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -34,8 +44,18 @@ func (h *Handler) RegisterRestaurant(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(req)
 }
 
+func (h *Handler) ListRestaurants(w http.ResponseWriter, r *http.Request) {
+	id := getPathID(r)
+	if id != "" {
+		h.GetRestaurant(w, r)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(h.store.GetAll())
+}
+
 func (h *Handler) GetRestaurant(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
+	id := getPathID(r)
 	restaurant, ok := h.store.Get(id)
 	if !ok {
 		http.Error(w, "not found", http.StatusNotFound)
@@ -46,7 +66,7 @@ func (h *Handler) GetRestaurant(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) UpdateBid(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
+	id := getPathID(r)
 
 	var req struct {
 		BidAmount float64 `json:"bidAmount"`
@@ -103,4 +123,13 @@ func (h *Handler) RegisterCampaign(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"status":"ok"}`))
+}
+
+func getPathID(r *http.Request) string {
+	path := r.URL.Path
+	idx := strings.LastIndex(path, "/")
+	if idx > 0 {
+		return path[idx+1:]
+	}
+	return ""
 }

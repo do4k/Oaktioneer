@@ -3,23 +3,28 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"oaktioneer/internal/api"
 	"oaktioneer/internal/store"
 )
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	s := store.NewRestaurantStore()
 	h := api.New(s)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /health", h.Health)
-	mux.HandleFunc("POST /restaurants", h.RegisterRestaurant)
-	mux.HandleFunc("GET /restaurants/{id}", h.GetRestaurant)
-	mux.HandleFunc("PUT /restaurants/{id}/bid", h.UpdateBid)
-	mux.HandleFunc("POST /auction", h.RunAuction)
-	mux.HandleFunc("POST /campaigns", h.RegisterCampaign)
+	mux.HandleFunc("/health", h.Health)
+	mux.HandleFunc("/restaurants", h.RegisterRestaurant)
+	mux.HandleFunc("/restaurants/", h.GetRestaurant)
+	mux.HandleFunc("/restaurants/-/bid", h.UpdateBid)
+	mux.HandleFunc("/auction", h.RunAuction)
+	mux.HandleFunc("/campaigns", h.RegisterCampaign)
 
-	log.Println("Starting auction service on :8080")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	log.Printf("Starting Oaktioneer on :%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, mux))
 }
