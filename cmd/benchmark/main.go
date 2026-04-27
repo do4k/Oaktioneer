@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"auction/internal/auction"
-	"auction/internal/models"
-	"auction/internal/store"
+	"oaktioneer/internal/auction"
+	"oaktioneer/internal/models"
+	"oaktioneer/internal/store"
 )
 
 func main() {

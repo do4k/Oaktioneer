@@ -3,7 +3,7 @@ package store
 import (
 	"sync"
 
-	"auction/internal/models"
+	"oaktioneer/internal/models"
 )
 
 type RestaurantStore struct {

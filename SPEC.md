@@ -1,7 +1,7 @@
-# Restaurant Auction System - Specification
+# Oaktioneer - Specification
 
 ## Overview
-Fast GSP (Generalized Second Price) auction system for sponsored restaurant spots. Designed for sub-100ms latency.
+Fast GSP (Generalized Second Price) auction system for sponsored restaurant campaigns. Designed for sub-100ms latency.
 
 ## Auction Mechanism
 

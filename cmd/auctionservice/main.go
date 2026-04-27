@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"auction/internal/api"
-	"auction/internal/store"
+	"oaktioneer/internal/api"
+	"oaktioneer/internal/store"
 )
 
 func main() {

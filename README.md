@@ -1,4 +1,4 @@
-# Restaurant Auction System
+# Oaktioneer
 
 Fast GSP (Generalized Second Price) auction system for sponsored restaurant campaigns. Designed for sub-100ms latency.
 
